@@ -8,18 +8,23 @@ import java.util.Properties;
 public class KafkaProducerApp {
     public static void main(String[] args) {
         Properties props = new Properties();
-        props.put("bootstrap.servers","BROCKER-1:9092,BROCKER-2:9093");
+        props.put("bootstrap.servers","localhost:9092,localhost:9093");
         props.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer");
 
-        KafkaProducer myProducer = new KafkaProducer(props);
+        KafkaProducer<String,String> myProducer = new KafkaProducer<String,String>(props);
 
-        ProducerRecord myMessage = new ProducerRecord("my_topic","Course-001","My Message 1");
 
         try{
-            myProducer.send(myMessage);
+            for(int i=0;i<150;i++){
+                myProducer.send(
+                        new ProducerRecord<String,String>("mytopic",Integer.toString(i),"MyMessage" + Integer.toString(i))
+                );
+            }
         } catch (Exception e){
             e.printStackTrace();
+        } finally {
+            myProducer.close();
         }
 
     }
