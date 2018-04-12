@@ -5,3 +5,7 @@
 ./bin/kafka-producer-perf-test.sh --topic mytopic --num-records 50 --record-size 1 --throughput 10 --producer-props bootstrap.servers=localhost:9092 key.serializer=org.apache.kafka.common.serialization.StringSerializer value.serializer=org.apache.kafka.common.serialization.StringSerializer
 
 
+## Create a new topic
+./bin/kafka-topics.sh --create --topic mytopic2 --zookeeper localhost:2181 --partitions 1 --replication-factor 1
+
+
