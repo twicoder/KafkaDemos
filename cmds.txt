@@ -3,3 +3,5 @@
 
 ## Generate mock data
 ./bin/kafka-producer-perf-test.sh --topic mytopic --num-records 50 --record-size 1 --throughput 10 --producer-props bootstrap.servers=localhost:9092 key.serializer=org.apache.kafka.common.serialization.StringSerializer value.serializer=org.apache.kafka.common.serialization.StringSerializer
+
+
