@@ -1,7 +1,9 @@
 package com.chinwe.objs;
 
+import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -11,24 +13,31 @@ public class CustomerDeserializer implements Deserializer<Customer> {
 
     }
 
-    public Customer deserialize(String s, byte[] bytes) {
-        for(byte b : bytes){
-            System.out.print(b);
+    public Customer deserialize(String s, byte[] data) {
+        int customerId;
+        String customerName;
+        int nameSize;
+
+        try {
+            if(data == null) {
+                return null;
+            }
+            if(data.length < 8){
+                throw new SerializationException("Size of data received" +
+                        " by IntegerDeserializer is shorter than expected");
+            }
+            ByteBuffer buffer = ByteBuffer.wrap(data);
+
+            customerId = buffer.getInt();
+            nameSize = buffer.getInt();
+            byte[] nameBytes = new byte[nameSize];
+            buffer.get(nameBytes);
+            customerName = new String(nameBytes, "UTF-8");
+            return new Customer(customerId, customerName);
+        } catch (Exception e) {
+            throw new SerializationException("Error when serializing " +
+                    "Customer to byte[] " + e);
         }
-        System.out.println();
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        int customerId = buffer.getInt();
-        System.out.println(customerId);
-        int stringSize = buffer.getInt();
-        System.out.println(stringSize);
-        StringBuilder sb = new StringBuilder();
-        for(int i=0;i<stringSize;i++){
-//            System.out.print(buffer.getChar());
-//            sb.append(buffer.getChar());
-        }
-        String customerName = sb.toString();
-        System.out.println(customerName);
-        return new Customer(customerId, "123");
     }
 
     public void close() {
